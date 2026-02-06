@@ -1,0 +1,19 @@
+- name: Configure Linux
+  hosts: linux
+  become: yes
+  gather_facts: yes
+
+  vars_files:
+    - ../group_vars/linux.yml
+
+  tasks:
+    - name: Show timezone variable (DEBUG)
+      ansible.builtin.debug:
+        var: timezone_name
+
+    - name: Set timezone
+      community.general.timezone:
+        name: "{{ timezone_name }}"
+
+  roles:
+    - apache

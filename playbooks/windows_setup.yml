@@ -1,0 +1,24 @@
+- name: Configure Windows
+  hosts: windows
+  gather_facts: no
+
+  vars_files:
+    - ../vars_group/windows.yml
+
+  tasks:
+    - name: Show timezone variable (DEBUG)
+      ansible.builtin.debug:
+        var: timezone_name
+
+    - name: Set Windows timezone
+      community.windows.win_timezone:
+        timezone: "{{ timezone_name }}"
+
+    - name: Verify timezone (Get-TimeZone)
+      ansible.windows.win_shell: |
+        Get-TimeZone | Select-Object -Property Id, DisplayName
+      register: tz_out
+
+    - name: Show timezone result (DEBUG)
+      ansible.builtin.debug:
+        var: tz_out.stdout
